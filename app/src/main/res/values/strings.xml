@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">D_Signage</string>
+    <string name="error_msg">Error !!!</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="licence">Licence</string>
+    <string name="support">Support</string>
+    <string name="leave_comment">Leave Comment</string>
+    <string name="delete">Delete</string>
+    <string name="event">Event</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="rename">Rename</string>
+    <string name="comment_title">There is always room for improvement! We would love to hear your thoughts on improving the app.</string>
+    <string name="add_view_url_title">Please Paste relate resource on below, we’ll import resource right away!</string>
+    <string name="hyper_link">Hyper Link</string>
+    <string name="your_reply">Your reply</string>
+    <string name="send">Send</string>
+    <string name="ok">OK</string>
+    <string name="email">Email</string>
+
+    <string name="comment_tips">Please enter no less than 10 characters</string>
+    <string name="rename_tips">Please enter no less than 2 characters</string>
+    <string name="type_new_name">Type new name</string>
+    <string name="type_project_name_here">Type project name here</string>
+    <string name="rename_error">Rename Error</string>
+    <string name="enter_correct_url">Please enter the correct Url</string>
+    <string name="enter_correct_time">Please enter the correct number</string>
+    <string name="give_permission">Please give the permission</string>
+    <string name="go_setting_open_permission">Please go to the settings to open the permission</string>
+    <string name="set_slider_time_tips">Please set time for the slider(unit:s)</string>
+</resources>

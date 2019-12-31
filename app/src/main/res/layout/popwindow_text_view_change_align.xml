@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/commentBackground"
+    app:cardCornerRadius="24dp">
+
+        <ImageView
+            android:id="@+id/img_add_text_view_detail"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="14dp"
+            android:src="@mipmap/text_btn"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tips_add_text_view_detail"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_add_text_view_detail"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            app:layout_constraintWidth_percent="0.65"
+            android:textColor="@color/white"
+            android:text="Please choose the TEXT align style"
+            android:layout_marginBottom="12dp"
+            android:lines="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <RadioGroup
+            android:id="@+id/radio_group_add_text_view_detail"
+            app:layout_constraintTop_toBottomOf="@+id/tips_add_text_view_detail"
+            android:layout_width="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintWidth_percent="0.5"
+            android:layout_height="wrap_content">
+
+
+            <RadioButton
+                android:layout_marginBottom="4dp"
+                android:id="@+id/radio_btn_align_left"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textAlignment="center"
+                android:button="@drawable/selector_radio_button_background"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="left"
+                android:textColor="@color/white"
+                android:checked="false"
+                />
+
+
+            <RadioButton
+                android:id="@+id/radio_btn_align_center"
+                android:layout_marginBottom="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:button="@drawable/selector_radio_button_background"
+                android:textColor="@color/white"
+                android:text="center"
+                android:checked="false"
+                />
+
+            <RadioButton
+                android:id="@+id/radio_btn_align_right"
+                android:layout_marginBottom="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:button="@drawable/selector_radio_button_background"
+                android:textColor="@color/white"
+                android:text="right"
+                android:checked="false"
+                />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btn_add_text_view_cancel"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/radio_group_add_text_view_detail"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/btn_add_text_view_ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/button_white_in_pop_window"
+            android:text="@string/cancel"
+            app:layout_constraintWidth_percent="0.33"
+            />
+    <Button
+        android:id="@+id/btn_add_text_view_ok"
+        app:layout_constraintTop_toTopOf="@+id/btn_add_text_view_cancel"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_add_text_view_cancel"
+        app:layout_constraintLeft_toRightOf="@+id/btn_add_text_view_cancel"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="@string/ok"
+        app:layout_constraintWidth_percent="0.33"
+        android:textColor="@color/white"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

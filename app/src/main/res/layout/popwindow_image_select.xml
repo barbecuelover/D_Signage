@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/commentBackground">
+
+    <LinearLayout
+        android:id="@+id/ll_select_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_select_album"
+            style="@style/button_white_in_pop_window"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="50dp"
+            android:visibility="visible"
+            android:text="Gallery" />
+
+        <Button
+            android:id="@+id/btn_select_camera"
+            style="@style/button_white_in_pop_window"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:visibility="visible"
+            android:text="Camera" />
+
+        <Button
+            android:id="@+id/btn_img_url"
+            style="@style/button_white_in_pop_window"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Net Url" />
+    </LinearLayout>
+
+
+</RelativeLayout>

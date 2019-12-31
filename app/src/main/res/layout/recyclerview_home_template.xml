@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_20"
+    android:maxHeight="@dimen/dp_240"
+    app:cardCornerRadius="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/home_project_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/btn_template_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:background="@null"
+            android:src="@mipmap/more_btn"
+            app:layout_constraintHorizontal_bias="0.92"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/template_create_time" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_slider_img_preview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintHeight_percent="0.28"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/template_create_time"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/margin_start"
+            android:layout_marginTop="@dimen/dp_12"
+            android:gravity="start"
+            android:text="2019/10/17"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintHeight_percent="0.12"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/template_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/template_name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/margin_start"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="Template Project"
+            android:textColor="@color/black"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintHeight_percent="0.12"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_slider_img_preview" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

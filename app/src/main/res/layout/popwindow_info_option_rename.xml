@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/commentBackground"
+    app:cardCornerRadius="24dp">
+
+
+        <TextView
+            android:id="@+id/comment_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            app:layout_constraintWidth_percent="0.65"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:text="@string/type_new_name"
+            android:lines="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/editText_template_rename"
+        android:layout_marginTop="14dp"
+        android:gravity="start|top"
+        android:hint="@string/type_project_name_here"
+        android:padding="12dp"
+
+        android:background="@drawable/shape_round_corner_all"
+        android:textColorHint="@color/editTextHintColor"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/comment_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+
+        <Button
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/editText_template_rename"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/btn_rename_ok"
+            android:gravity="center"
+            android:id="@+id/btn_rename_cancel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@mipmap/cancel_btn_title"
+            app:layout_constraintWidth_percent="0.08"
+            app:layout_constraintDimensionRatio="1:1"
+            android:textColor="@color/white"
+            />
+    <Button
+        app:layout_constraintTop_toBottomOf="@+id/editText_template_rename"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/btn_rename_cancel"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"
+        android:id="@+id/btn_rename_ok"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@mipmap/title_ok_btn"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintDimensionRatio="1:1"
+        android:textColor="@color/white"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
