@@ -29,7 +29,7 @@ public interface MainContract {
 
     interface MainActivityPresenter extends AbstractBasePresenter<MainView> {
         void getTemplates();
-        void requestPermissionsAndSkip(RxPermissions rxPermissions, CallBack callBack);
+        void requestPermissionsAndSkip(RxPermissions rxPermissions, int templateIndex);
         void renameTemplate(TemplateInfo templateInfo);
         void deleteTemplate(TemplateInfo templateInfo);
     }

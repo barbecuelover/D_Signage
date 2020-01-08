@@ -249,7 +249,6 @@ public class DragTouchListener implements View.OnTouchListener {
                 break;
             case MotionEvent.ACTION_UP:
                 if (System.currentTimeMillis() - downTime < 500) {
-                    view.setBackgroundColor(Color.BLUE);
                     ItemOnClick();
                 } else {
                     baseValue = 0;

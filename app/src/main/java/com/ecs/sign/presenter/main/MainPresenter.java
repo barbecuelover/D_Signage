@@ -3,6 +3,7 @@ package com.ecs.sign.presenter.main;
 import android.Manifest;
 
 import com.ecs.sign.base.common.CallBack;
+import com.ecs.sign.base.common.util.DataKeeper;
 import com.ecs.sign.base.common.util.LogUtils;
 import com.ecs.sign.base.presenter.RxBasePresenter;
 import com.ecs.sign.model.DataManager;
@@ -10,6 +11,7 @@ import com.ecs.sign.model.room.IDaoHelper;
 import com.ecs.sign.model.room.info.TemplateInfo;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.io.File;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -51,17 +53,16 @@ public class MainPresenter extends RxBasePresenter<MainContract.MainView> implem
     }
 
     @Override
-    public void requestPermissionsAndSkip(RxPermissions rxPermissions, CallBack callBack) {
+    public void requestPermissionsAndSkip(RxPermissions rxPermissions, int  templateIndex) {
         Disposable disposable = rxPermissions.requestEachCombined(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA).subscribe(permission -> { // will emit 2 Permission objects
             if (permission.granted) {
                 // `permission.name` is granted !
-                callBack.onSucceed();
+                view.skipToEditActivity(templateIndex);
             } else if (permission.shouldShowRequestPermissionRationale) {
                 // Denied permission without ask never again
-                callBack.onFailed();
+                view.showToast("Please check the permissions");
             } else {
-                callBack.onFailed();
-
+                view.showToast("Please check the permissions");
             }
         });
         addEventSubscribe(disposable);
@@ -85,6 +86,11 @@ public class MainPresenter extends RxBasePresenter<MainContract.MainView> implem
 
     @Override
     public void deleteTemplate(TemplateInfo templateInfo) {
+        //1.删除template对应的文件夹
+        String tempDirPath = DataKeeper.getTemplatePath(templateInfo);
+        File file = new File(tempDirPath);
+        DataKeeper.deleteFile(file);
+        //2.删除数据库
         dataManager.deleteTemplate(templateInfo, new CallBack() {
             @Override
             public void onSucceed() {

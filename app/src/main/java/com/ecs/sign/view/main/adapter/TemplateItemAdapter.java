@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.ecs.sign.R;
@@ -21,7 +22,10 @@ public class TemplateItemAdapter extends BaseQuickAdapter <SliderInfo,BaseViewHo
 
     @Override
     protected void convert(@NonNull BaseViewHolder helper, SliderInfo sliderInfo) {
-        Glide.with(mContext).load(sliderInfo.getPreviewUrl()).placeholder(R.mipmap.grid).into((ImageView) helper.getView(R.id.img_template_slider_preview));
+        Glide.with(mContext).load(sliderInfo.getPreviewUrl())
+                .skipMemoryCache(true) // 不使用内存缓存
+                .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
+                .placeholder(R.mipmap.grid).into((ImageView) helper.getView(R.id.img_template_slider_preview));
     }
 
 

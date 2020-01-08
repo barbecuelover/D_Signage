@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.ecs.sign.R;
@@ -54,6 +56,8 @@ import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
 import com.zhihu.matisse.internal.utils.MediaStoreCompat;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,7 +99,7 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
     private List<View> viewList;
     private List<VideoView> videoViewList = new ArrayList();
     private String currentSliderPath;
-
+    private boolean isChanged;
 
     @Nullable
     @Override
@@ -125,6 +129,7 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
             index = getArguments().getInt(Constant.SLIDER_INDEX);
             LogUtils.d("CanvasFragment  Current index = " + index);
         }
+        isChanged = false;
         viewList = new ArrayList<>();
         currentView = canvasView;
         editActivity = (EditActivity) context;
@@ -141,7 +146,8 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
             public void onClick(View v) {
                 currentView = canvasView;
                 changeSelectedViewStatus();
-                editActivity.resetCanvas();
+//                editActivity.resetCanvas();
+                editActivity.showWidgetType(false);
             }
         });
     }
@@ -188,6 +194,7 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
      * @param viewType 对应viewType 种类的index
      */
     public void createNewView(int viewType) {
+        isChanged = true;
         LogUtils.d("CanvasFragment createNewView type=" + viewType);
         switch (viewType) {
             case Constant.ID_TYPE_TEXT:
@@ -262,6 +269,7 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
      * @param attrID
      */
     public void changeViewAttr(int attrID) {
+        isChanged = true;
         ViewInfo viewInfo = (ViewInfo) currentView.getTag(R.id.view_info_tag);
 
         switch (attrID) {
@@ -436,7 +444,10 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
     public void setCanvasBackground(String bgUrl) {
         LogUtils.d("background url = " + bgUrl);
         if (bgUrl != null) {
-            Glide.with(context).load(bgUrl).into(new SimpleTarget<Drawable>() {
+            Glide.with(context).load(bgUrl)
+                    .skipMemoryCache(true) // 不使用内存缓存
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
+                    .into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                     canvasView.setBackground(resource);
@@ -451,7 +462,10 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
     private void setCanvasBackground(Uri uri) {
         LogUtils.d("background url = " + uri);
         if (uri != null) {
-            Glide.with(context).load(uri).into(new SimpleTarget<Drawable>() {
+            Glide.with(context).load(uri)
+                    .skipMemoryCache(true) // 不使用内存缓存
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // 不使用磁盘缓存
+                    .into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                     canvasView.setBackground(resource);
@@ -601,6 +615,13 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
         if (currentViewInfo.getType().equals(Constant.VIEW_VIDEO)) {
             videoViewList.remove(currentView);
         }
+        //如果 对应的Slider目录中 有本地资源文件，则删除
+        if (currentViewInfo.isUrlIsLocal() && currentViewInfo.getUrl()!=null && currentViewInfo.getUrl().contains(currentSliderPath)){
+            File file = new File(currentViewInfo.getUrl());
+            DataKeeper.deleteFile(file);
+        }
+
+
     }
 
 
@@ -629,12 +650,28 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
 
     /**
      * 切换CanvasFragment 或者离开编辑界面时 调用。
+     *
+     * //是否需要起工作线程 ？？
      */
     public void saveCanvasInfo() {
-        //保存当前页的预览图片
+        //1.保存当前页的预览图片
         saveSliderPreviewImage();
+        //2.保存当前页背景图片
+        String backgroundUrl = sliderInfo.getBackgroundUrl();
+        if (backgroundUrl != null && !backgroundUrl.contains(currentSliderPath)) {
+            String fileType = backgroundUrl.substring(backgroundUrl.lastIndexOf("."));
+            String fileName = "background_" + sliderInfo.getId() + fileType;
+            try {
+                // /storage/emulated/0/signage/temp_1573716637070/slider_1573716637084/5002.jpg
+                String finalSliderBgPath = DataKeeper.fileCopy(backgroundUrl, currentSliderPath, fileName);
+                LogUtils.d("Slider background Path: " + finalSliderBgPath);
+                sliderInfo.setBackgroundUrl(finalSliderBgPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-
+        //3.保存View信息。并存储到对应的slider文件夹下 。
         sliderInfo.removeAllViews();
         LogUtils.d("saveCanvasInfo ="+viewList.size());
         for (int i = 0; i < viewList.size(); i++) {
@@ -645,7 +682,7 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
             viewInfo.setLeft(view.getLeft());
             viewInfo.setTop(view.getTop());
             viewInfo.setSliderId(sliderInfo.getId());
-            sliderInfo.addView(viewInfo);
+
 
             if (viewInfo.getType().equals(Constant.VIEW_VIDEO)) {
                 int duration = ((VideoView) view).getDuration();
@@ -655,6 +692,27 @@ public class CanvasFragment extends BaseFragment<CanvasPresenter> implements Can
                 LogUtils.e("当前视频长度：" + duration);
             }
 
+            //4.如果是本地资源 则保存到 对应的文件目录 下， 网络资源 无需操作。
+            //判断是否是原文件，如果图片没变，则不操作。
+            if (viewInfo.isUrlIsLocal() && viewInfo.getUrl() != null) {
+                String initialFilePath = viewInfo.getUrl();
+                if (!initialFilePath.contains(currentSliderPath)) {
+                    //copy file to  the currentSliderPath and rename
+                    //2.获取文件类型。
+                    String fileType = initialFilePath.substring(initialFilePath.lastIndexOf("."));
+                    String fileName = "view_" + viewInfo.getRealId() + fileType;
+                    try {
+                        // /storage/emulated/0/signage/temp_1573716637070/slider_1573716637084/5002.jpg
+                        String finalPath = DataKeeper.fileCopy(initialFilePath, currentSliderPath, fileName);
+                        LogUtils.d("finalPath: " + finalPath);
+                        viewInfo.setUrl(finalPath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            sliderInfo.addView(viewInfo);
         }
     }
 

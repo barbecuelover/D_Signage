@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         templateAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                goEditActivity(position);
+                mPresenter.requestPermissionsAndSkip(rxPermissions,position);
             }
         });
         tempRecycler.addOnItemTouchListener(new OnItemChildClickListener() {
@@ -181,17 +181,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_new_project:
-                mPresenter.requestPermissionsAndSkip(rxPermissions, new CallBack() {
-                    @Override
-                    public void onSucceed() {
-                        goEditActivity(-1);
-                    }
-
-                    @Override
-                    public void onFailed() {
-                        showToast("Please check the permissions");
-                    }
-                });
+                mPresenter.requestPermissionsAndSkip(rxPermissions, -1);
                 break;
             case R.id.btn_info:
                 homeWindowHelper.popupProjectInfoWindow(new ProjectInfoWindow.OnButtonClicked() {
@@ -221,10 +211,5 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     }
 
-
-    private void goEditActivity(int index) {
-
-
-    }
 
 }

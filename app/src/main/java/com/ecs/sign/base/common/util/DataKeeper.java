@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.ecs.sign.model.room.info.SliderInfo;
+import com.ecs.sign.model.room.info.TemplateInfo;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +44,7 @@ public class DataKeeper {
 
 	//文件缓存<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-	public static final String fileRootPath = getSDPath() != null ? (getSDPath() + "/signage/") : null;
+	public static final String fileRootPath = getSDPath() != null ? (getSDPath() + "/d_signage/") : null;
 
 	public static final String accountPath = fileRootPath + "account/";
 	public static final String videoPath = fileRootPath + "video/";
@@ -276,9 +277,34 @@ public class DataKeeper {
 		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
 	}
 
+
+	public static String getTemplatePath(TemplateInfo templateInfo) {
+		return DataKeeper.fileRootPath + "temp_" + templateInfo.getId() ;
+	}
+
     public static String getSlidePath(SliderInfo sliderInfo) {
-		return DataKeeper.fileRootPath + "temp_" + sliderInfo.getTemplateId() + "/slider_" + sliderInfo.getId() + "/";
-    }
+//		return DataKeeper.fileRootPath + "temp_" + sliderInfo.getTemplateId() + "/slider_" + sliderInfo.getId() + "/";
+		return DataKeeper.fileRootPath + "temp_" + sliderInfo.getTemplateId() + "/slider_" + sliderInfo.getId();
+	}
+
+
+
+	//flie：要删除的文件夹的所在位置
+	public static void deleteFile(File file) {
+		if (file == null){
+			return;
+		}
+		if (file.isDirectory()) {
+			File[] files = file.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				File f = files[i];
+				deleteFile(f);
+			}
+			file.delete();//如要保留文件夹，只删除文件，请注释这行
+		} else if (file.exists()) {
+			file.delete();
+		}
+	}
 
 
     private void createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
