@@ -29,4 +29,17 @@
         <!-- 指定消失的动画xml -->
     </style>
 
+    <!--被点名了的动画-->
+    <style name="device_list_dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--<item name="android:windowFrame">@null</item>-->
+    </style>
+
+    <style name="select_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/pop_exit_anim</item>
+    </style>
+
 </resources>

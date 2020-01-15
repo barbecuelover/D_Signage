@@ -55,7 +55,7 @@ public class ZipUtils {
             zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(
                     zipFile), BUFF_SIZE));
 
-            zipFile(resFile, zipout, "",zipListener);
+            zipFile(resFile, zipout, "",zipListener,true);
 
             zipout.close();
         } catch (Exception e) {
@@ -80,7 +80,7 @@ public class ZipUtils {
                 if(stopZipFlag){
                     break;
                 }
-                zipFile(resFile, zipout, "",zipListener);
+                zipFile(resFile, zipout, "",zipListener,true);
             }
             zipout.close();
         } catch (Exception e) {
@@ -102,7 +102,7 @@ public class ZipUtils {
         try {
             zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile), BUFF_SIZE));
             for (File resFile : resFileList) {
-                zipFile(resFile, zipout, "",zipListener);
+                zipFile(resFile, zipout, "",zipListener,true);
             }
             zipout.setComment(comment);
             zipout.close();
@@ -285,7 +285,7 @@ public class ZipUtils {
      * @param zipout 压缩的目的文件
      * @param rootpath 压缩的文件路径
      */
-    private static void zipFile(File resFile, ZipOutputStream zipout, String rootpath,ZipListener zipListener)
+    private static void zipFile(File resFile, ZipOutputStream zipout, String rootpath,ZipListener zipListener,boolean showProgress)
     {
         try {
             rootpath = rootpath + (rootpath.trim().length() == 0 ? "" : File.separator)
@@ -295,15 +295,20 @@ public class ZipUtils {
                 File[] fileList = resFile.listFiles();
                 int length=fileList.length;
                 // Log.e("zipprogress", (int)((1 / (float) (length+1))*100)+"%");
-                zipListener.zipProgress((int)((1 / (float) (length+1))*100));
+                if (zipListener!=null && showProgress){
+                    zipListener.zipProgress((int)((1 / (float) (length+1))*100));
+                }
+
                 for (int i=0;i<length;i++) {
                     if(stopZipFlag){
                         break;
                     }
                     File file=fileList[i];
-                    zipFile(file, zipout, rootpath,zipListener);
+                    zipFile(file, zipout, rootpath,zipListener,false);
                     // Log.e("zipprogress", (int)(((i+2) / (float) (length+1))*100)+"%");
-                    zipListener.zipProgress((int)(((i+2) / (float) (length+1))*100));
+                    if (zipListener!=null && showProgress){
+                        zipListener.zipProgress((int)(((i+2) / (float) (length+1))*100));
+                    }
                 }
             } else {
                 byte buffer[] = new byte[BUFF_SIZE];

@@ -22,7 +22,7 @@ import com.ecs.sign.base.common.util.StringUtils;
  *                         showToast("onTypefaceChanged :"+index);
  *                     }
  *                 });
- *                 textAlignWindow.show();
+ *                 textAlignWindow.showDeviceDialog();
  *
  *
  *

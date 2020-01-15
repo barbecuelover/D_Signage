@@ -44,7 +44,7 @@ public class DataKeeper {
 
 	//文件缓存<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-	public static final String fileRootPath = getSDPath() != null ? (getSDPath() + "/d_signage/") : null;
+	public static final String fileRootPath = getSDPath() != null ? (getSDPath() + "/signage/") : null;
 
 	public static final String accountPath = fileRootPath + "account/";
 	public static final String videoPath = fileRootPath + "video/";

@@ -9,4 +9,5 @@
     <color name="commentBackground">#121315</color>
     <color name="editTextHintColor">#4c5860</color>
     <color name="button_blue">#21b3f4</color>
+    <color name="color_33">#333333</color>
 </resources>

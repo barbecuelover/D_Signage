@@ -27,8 +27,8 @@ public class TemplateInfo implements Serializable {
     @PrimaryKey()
     private long id;
     private String name;
-    private double width;
-    private double height;
+    private double width =240;
+    private double height = 328;
     private String proportion ;
     private String description;
     private long modifiedTime;
@@ -77,13 +77,13 @@ public class TemplateInfo implements Serializable {
 
     private Map<String,Object> createMap(){
         Map<String ,Object> tempMap = new HashMap<>();
-        tempMap.put("name", name);
-        tempMap.put("id",id);
-        tempMap.put("width", width);
-        tempMap.put("height", height);
+        tempMap.put("templateName", name);
+        tempMap.put("templateId",id);
+        tempMap.put("templateWidth", width);
+        tempMap.put("templateHeight", height);
         tempMap.put("proportion",proportion);
         tempMap.put("description",description);
-        tempMap.put("modifiedTime", modifiedTime);
+        tempMap.put("lastModifiedTime", modifiedTime);
 
         List<Map<String,Object>> list = new ArrayList<>();
         for (int i= 0;i< sliderPageList.size();i++){

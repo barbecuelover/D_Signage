@@ -4,13 +4,19 @@ import android.os.Bundle;
 
 import com.ecs.sign.base.common.CallBack;
 import com.ecs.sign.base.common.Constant;
+import com.ecs.sign.base.common.util.DataKeeper;
+import com.ecs.sign.base.common.util.FileUtils;
 import com.ecs.sign.base.common.util.LogUtils;
+import com.ecs.sign.base.common.util.ZipUtils;
 import com.ecs.sign.base.presenter.RxBasePresenter;
 import com.ecs.sign.model.DataManager;
 import com.ecs.sign.model.room.info.SliderInfo;
 import com.ecs.sign.model.room.info.TemplateInfo;
+import com.ecs.sign.socket.transport.SocketFileClientCallBack;
+import com.ecs.sign.socket.transport.TransportFileHelper;
 import com.ecs.sign.view.edit.fragment.CanvasFragment;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +41,6 @@ public class EditPresenter extends RxBasePresenter<EditContract.EditView> implem
     }
 
 
-
     @Override
     public void changeBottomWidgetList(String viewType) {
 
@@ -43,6 +48,7 @@ public class EditPresenter extends RxBasePresenter<EditContract.EditView> implem
 
     /**
      * 获取当前的 Template ，无则是新建。 并显示第一个slider
+     *
      * @param index
      */
     @Override
@@ -60,10 +66,10 @@ public class EditPresenter extends RxBasePresenter<EditContract.EditView> implem
         } else {
             isNew = false;
             templateInfo = dataManager.getTemplate(index);
-            LogUtils.d("Template ：slider size = "+templateInfo.getSliderInfoList().size());
-            for (SliderInfo sliderInfo : templateInfo.getSliderInfoList()){
+            LogUtils.d("Template ：slider size = " + templateInfo.getSliderInfoList().size());
+            for (SliderInfo sliderInfo : templateInfo.getSliderInfoList()) {
                 CanvasFragment canvasFragment = new CanvasFragment();
-                mapList.put(sliderInfo,canvasFragment);
+                mapList.put(sliderInfo, canvasFragment);
             }
         }
 
@@ -93,13 +99,14 @@ public class EditPresenter extends RxBasePresenter<EditContract.EditView> implem
 
     /**
      * 替换 canvas 中的fragment 并重置界面所有状态
+     *
      * @param position
      */
     public void replaceCanvasAndResetStatus(int position) {
-        LogUtils.d("replaceCanvasAndResetStatus position="+position);
+        LogUtils.d("replaceCanvasAndResetStatus position=" + position);
         if (currentCanvas != position) {
 
-            if (currentCanvas>=0){
+            if (currentCanvas >= 0) {
                 CanvasFragment oldCanvas = mapList.get(templateInfo.getSliderInfoList().get(currentCanvas));
 
                 oldCanvas.saveCanvasInfo();
@@ -151,12 +158,13 @@ public class EditPresenter extends RxBasePresenter<EditContract.EditView> implem
 
     /**
      * 更改当前 view 或者 slider的属性， 或者 复制 删除 。
+     *
      * @param attrID
      */
     @Override
     public void changeCurrentWidgetAttr(int attrID) {
 
-        switch (attrID){
+        switch (attrID) {
             case Constant.ID_SLIDER_SET_TIME:
 
                 break;
@@ -169,36 +177,80 @@ public class EditPresenter extends RxBasePresenter<EditContract.EditView> implem
                 deleteSlider();
                 break;
 
-                default:
-                    //通知  当前canvasFragment ，对对应的view 做相应的操作。
-                    SliderInfo sliderInfo = templateInfo.getSliderInfoList().get(currentCanvas);
-                    CanvasFragment canvasFragment = mapList.get(sliderInfo);
-                    if (canvasFragment!=null){
-                        canvasFragment.changeViewAttr(attrID);
-                    }
-                    break;
+            default:
+                //通知  当前canvasFragment ，对对应的view 做相应的操作。
+                SliderInfo sliderInfo = templateInfo.getSliderInfoList().get(currentCanvas);
+                CanvasFragment canvasFragment = mapList.get(sliderInfo);
+                if (canvasFragment != null) {
+                    canvasFragment.changeViewAttr(attrID);
+                }
+                break;
 
         }
     }
+
 
     @Override
     public void updateTemplate(CallBack callBack) {
 
         //先保存 当前CanvasFragment中的信息。
         SliderInfo currentSlider = templateInfo.getSliderInfoList().get(currentCanvas);
-        CanvasFragment currentCanvas =  mapList.get(currentSlider);
-        if (currentCanvas!=null){
+        CanvasFragment currentCanvas = mapList.get(currentSlider);
+        if (currentCanvas != null) {
             currentCanvas.saveCanvasInfo();
         }
 
-       //将url 修改， 图片另存为到 Template 所属目录。
-        if (isNew){
-            dataManager.insertTemplate(templateInfo,callBack);
-        }else {
-            dataManager.updateTemplate(templateInfo,callBack);
+        //将url 修改， 图片另存为到 Template 所属目录。
+        if (isNew) {
+            dataManager.insertTemplate(templateInfo, new CallBack() {
+                @Override
+                public void onSucceed() {
+                    isNew = false;
+                    callBack.onSucceed();
+                }
+
+                @Override
+                public void onFailed() {
+                    callBack.onFailed();
+                }
+            });
+
+        } else {
+            dataManager.updateTemplate(templateInfo, callBack);
         }
 
     }
+
+    /**
+     * 导出模板 在播放端显示
+     *
+     * @param templateInfo
+     */
+    @Override
+    public void transferTemplate(String ip, TemplateInfo templateInfo, SocketFileClientCallBack clientCallBack) {
+        SliderInfo currentSlider = templateInfo.getSliderInfoList().get(currentCanvas);
+        CanvasFragment currentCanvas = mapList.get(currentSlider);
+        if (currentCanvas != null) {
+            currentCanvas.saveCanvasInfo();
+        }
+        String tempPath = DataKeeper.getTemplatePath(templateInfo);
+        FileUtils.writeStringToFile(templateInfo.toJsonString(), tempPath + "/temp.json");
+        //需要打包的文件夾
+        File resFile = new File(tempPath);
+        //壓縮生成的文件
+        File zipFile = new File(tempPath + ".zip");
+
+        ZipUtils.zipFile(resFile, zipFile, new ZipUtils.ZipListener() {
+            @Override
+            public void zipProgress(int zipProgress) {
+                LogUtils.e("zipProgress  :" + zipProgress);
+            }
+        });
+
+        TransportFileHelper helper = new TransportFileHelper();
+        helper.startTransport(ip, zipFile, clientCallBack);
+    }
+
 
     /**
      * 复制 当前编辑页，并更新界面内容
@@ -215,9 +267,9 @@ public class EditPresenter extends RxBasePresenter<EditContract.EditView> implem
      * 删除 一个编辑页。并更新当前 界面内容。
      */
     private void deleteSlider() {
-        if ( templateInfo.getSliderInfoList().size()==1){
+        if (templateInfo.getSliderInfoList().size() == 1) {
             view.showToast("至少要保留一个编辑页");
-        }else {
+        } else {
             SliderInfo sliderDel = templateInfo.getSliderInfoList().get(currentCanvas);
             templateInfo.getSliderInfoList().remove(sliderDel);
             mapList.remove(sliderDel);
@@ -244,15 +296,14 @@ public class EditPresenter extends RxBasePresenter<EditContract.EditView> implem
 
     /**
      * 为 canvas 设置 对应的 sliderInfo 在List<SliderInfo>的Index
+     *
      * @param canvasFragment
      */
-    private void setCanvasIndex(CanvasFragment canvasFragment){
+    private void setCanvasIndex(CanvasFragment canvasFragment) {
         Bundle args = new Bundle();
         args.putInt(Constant.SLIDER_INDEX, currentCanvas);
         canvasFragment.setArguments(args);
     }
-
-
 
 
 }

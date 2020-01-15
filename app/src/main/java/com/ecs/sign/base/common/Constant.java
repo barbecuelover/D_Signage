@@ -10,12 +10,14 @@ public class Constant {
 
     public static final String VIEW_TYPE = "view_type";
     public static final String VIEW_SLIDER = "slider";
-    public static final String VIEW_TEXT = "text";
-    public static final String VIEW_IMAGE = "image";
-    public static final String VIEW_VIDEO = "video";
+    public static final String VIEW_TEXT = "textTypeId";
+    public static final String VIEW_IMAGE = "imageTypeId";
+    public static final String VIEW_VIDEO = "mediaTypeId";
 
-
-
+    public static String SOCKET_CLIENT = "client";
+    public static String SOCKET_SERVER = "server";
+    public static final int SOCKET_PORT = 8904;
+    public static final int SERVER_PORT = 8999;
 
     public static final int ID_TYPE_TEXT = 1000;
     public static final int ID_TYPE_BACKGROUND = 1001;
@@ -45,6 +47,11 @@ public class Constant {
     public static final int ID_VIDEO_MUTE = 301;
 
 
+    public static final int REQUEST_CODE_NEW_IMAGE_VIEW_GALLERY = 100;
+    public static final int REQUEST_CODE_NEW_IMAGE_VIEW_CAMERA = 101;
+    public static final int REQUEST_CODE_NEW_VIDEO_VIEW_LOCAL = 200;
 
-
+    public static final int REQUEST_CODE_SLIDER_BG_GALLERY = 300;
+    public static final int REQUEST_CODE_SLIDER_BG_CAMERA = 301;
+    public static final String FILE_PATH = "com.ecs.signage.fileprovider";
 }

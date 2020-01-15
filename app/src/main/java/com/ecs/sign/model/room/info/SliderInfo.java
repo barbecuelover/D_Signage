@@ -130,7 +130,7 @@ public class SliderInfo implements Serializable {
         viewMap.put("sliderId",id);
         viewMap.put("playTime",playTime);
         //  /storage/emulated/0/signage/temp_1573805992443/slider_1573805992457/view_1573806016973.mp4
-        viewMap.put("background", DataKeeper.fileRootPath+"temp_"+templateId+"/slider_"+id+"/background_"+id+".jpg");
+        viewMap.put("background",backgroundUrl);
         List<Map<String,Object>> list = new ArrayList<>();
         for (int i = 0; i< views.size(); i++){
             list.add(views.get(i).createMap());

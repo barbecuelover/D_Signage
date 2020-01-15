@@ -31,6 +31,16 @@ public abstract class BaseFragment<T extends AbstractBasePresenter> extends Frag
     View view;
     protected BaseActivity context;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initPresenter();
+        if(mPresenter != null){
+            LogUtils.d("BaseFragment mPresenter 不为空" + mPresenter.getClass());
+            mPresenter.attachView(this);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,7 +49,6 @@ public abstract class BaseFragment<T extends AbstractBasePresenter> extends Frag
         mUnbinder= ButterKnife.bind(this,view);
         context =(BaseActivity) getActivity();
         initView();
-        initPresenter();
         initData();
         initEvent();
         return view;
@@ -48,10 +57,7 @@ public abstract class BaseFragment<T extends AbstractBasePresenter> extends Frag
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(mPresenter != null){
-          LogUtils.d("BaseFragment mPresenter 不为空" + mPresenter.getClass());
-          mPresenter.attachView(this);
-        }
+
     }
 
     @Override

@@ -40,14 +40,16 @@ public class ViewInfo implements Serializable {
     private int textColor;
     private int textGravity;
     private int textTypeface; //加粗斜体
-
+    private int textBackground;
+    private float transparent;
 
     //ImageView
     private int imgScaleType;//图片拉伸
 
 
-    private boolean mediaIsLoop;
 
+    private boolean mediaIsLoop;
+    private boolean videoMute;
 
     public boolean isMediaIsLoop() {
         return mediaIsLoop;
@@ -97,10 +99,28 @@ public class ViewInfo implements Serializable {
         viewMap.put("textColor",textColor);
         viewMap.put("textGravity",textGravity);
         viewMap.put("textTypeface",textTypeface);
-
+        viewMap.put("textBackground",textBackground);
+        viewMap.put("transparent",transparent);
         viewMap.put("imgScaleType",imgScaleType);
-
+        viewMap.put("videoMute",videoMute);
         return  viewMap;
+    }
+
+
+    public int getTextBackground() {
+        return textBackground;
+    }
+
+    public void setTextBackground(int textBackground) {
+        this.textBackground = textBackground;
+    }
+
+    public float getTransparent() {
+        return transparent;
+    }
+
+    public void setTransparent(float transparent) {
+        this.transparent = transparent;
     }
 
     public long getRealId() {
@@ -216,8 +236,6 @@ public class ViewInfo implements Serializable {
         this.height = height;
     }
 
-
-
     public String getUrl() {
         return url;
     }
@@ -226,5 +244,11 @@ public class ViewInfo implements Serializable {
         this.url = url;
     }
 
+    public boolean isVideoMute() {
+        return videoMute;
+    }
 
+    public void setVideoMute(boolean videoMute) {
+        this.videoMute = videoMute;
+    }
 }

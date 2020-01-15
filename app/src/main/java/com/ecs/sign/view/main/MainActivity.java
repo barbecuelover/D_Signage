@@ -19,6 +19,7 @@ import com.ecs.sign.model.DataManager;
 import com.ecs.sign.model.room.info.TemplateInfo;
 import com.ecs.sign.presenter.main.MainContract;
 import com.ecs.sign.presenter.main.MainPresenter;
+import com.ecs.sign.socket.scan.ScanDevicesHelper;
 import com.ecs.sign.view.edit.EditActivity;
 import com.ecs.sign.view.main.adapter.TemplateAdapter;
 import com.ecs.sign.view.main.window.CommentWindow;
@@ -54,7 +55,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ScanDevicesHelper.getInstance(getApplicationContext()).startListening();
     }
 
     @Override
@@ -87,6 +88,12 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     protected void onResume() {
         super.onResume();
         mPresenter.getTemplates();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ScanDevicesHelper.getInstance(getApplicationContext()).stopListening();
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.ecs.sign.view.edit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -24,13 +23,16 @@ import com.ecs.sign.model.DataManager;
 import com.ecs.sign.model.room.info.TemplateInfo;
 import com.ecs.sign.presenter.edit.EditContract;
 import com.ecs.sign.presenter.edit.EditPresenter;
+import com.ecs.sign.socket.DeviceListDialog;
+import com.ecs.sign.socket.scan.ScanDevicesHelper;
+import com.ecs.sign.socket.scan.ServerDeviceEntity;
+import com.ecs.sign.socket.transport.SocketFileClientCallBack;
 import com.ecs.sign.view.edit.adapter.SliderAdapter;
 import com.ecs.sign.view.edit.adapter.WidgetAttrAdapter;
 import com.ecs.sign.view.edit.adapter.WidgetTypeAdapter;
 import com.ecs.sign.view.edit.bean.Widget;
 import com.ecs.sign.view.edit.bean.WidgetHelper;
 import com.ecs.sign.view.edit.fragment.CanvasFragment;
-import com.ecs.sign.view.main.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +65,7 @@ public class EditActivity extends BaseActivity<EditContract.EditActivityPresente
     RecyclerView rycWidgetType;
 
     @BindView(R.id.edit_project_canvas_container)
-    FrameLayout CanvasContainer;
+    FrameLayout canvasContainer;
 
 //    NoScrollViewPager viewPager;
 
@@ -79,6 +81,8 @@ public class EditActivity extends BaseActivity<EditContract.EditActivityPresente
 
     public TemplateInfo templateInfo;
     WidgetHelper widgetHelper;
+
+    ScanDevicesHelper scanDevicesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,13 +118,11 @@ public class EditActivity extends BaseActivity<EditContract.EditActivityPresente
         widgetHelper = new WidgetHelper();
         attrAdapter = new WidgetAttrAdapter( widgetAttrList);
         rycWidgetAttr.setAdapter(attrAdapter);
-
+        scanDevicesHelper = ScanDevicesHelper.getInstance(this);
         Intent intent = getIntent();
         tempIndex = intent.getIntExtra(TEMPLATE_INDEX, -1);
         //回调 initSliders
         mPresenter.getTemplate(tempIndex);
-
-
     }
 
     @Override
@@ -149,31 +151,89 @@ public class EditActivity extends BaseActivity<EditContract.EditActivityPresente
             }
         });
 
+
+
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_edit_project_page_add:
-//                editMvpPresenter.addSliderPage();
-                //新建页
                 mPresenter.addNewSlider();
                 break;
             case R.id.btn_edit_page_setting:
-//                editMvpPresenter.showSlideSettingPopWindow(this,v);
                 break;
             case R.id.btn_edit_project_play:
 //                changeToPlayModel();
                 break;
             case R.id.btn_edit_page_output:
-//                ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//                viewPager.setLayoutParams(layoutParams);
-//                viewPager.requestLayout();
+                searchSocketServerDevice();
                 break;
         }
     }
 
+    private void searchSocketServerDevice() {
+        DeviceListDialog deviceListDialog = new DeviceListDialog(this);
+        deviceListDialog.showDeviceDialog(new DeviceListDialog.DeviceDialogCallBack() {
+            @Override
+            public void TransportCancel() {
+
+            }
+
+            @Override
+            public void TransportDeviceSelected(String deviceIp) {
+
+                deviceListDialog.showConfirmDialog(new DeviceListDialog.ConfirmCallBack() {
+                    @Override
+                    public void onConfirmOK() {
+                        deviceListDialog.dismissAllowBtn();
+                        mPresenter.transferTemplate(deviceIp, templateInfo, new SocketFileClientCallBack() {
+                            @Override
+                            public void onSucceed() {
+                                deviceListDialog.dismiss("传输成功！");
+                            }
+
+                            @Override
+                            public void onProgress(double position) {
+                                if (position <= 100) {
+
+                                    deviceListDialog.showProgress(position + "%");
+                                } else {
+                                    deviceListDialog.showProgress("传输完成，正在效验文件！");
+                                }
+                            }
+
+                            @Override
+                            public void onFailed() {
+                                deviceListDialog.dismiss("传输失败！");
+                                deviceListDialog.showAllowBtn();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onConfirmCancel() {
+
+                    }
+                });
+            }
+        });
+
+        scanDevicesHelper.setListeningCallBack(new ScanDevicesHelper.OnServerDeviceCallBackListener() {
+            @Override
+            public void onResult(ServerDeviceEntity serverDeviceEntity) {
+                deviceListDialog.addSocketDevice(serverDeviceEntity);
+            }
+        });
+
+        scanDevicesHelper.scanServerDevices();
+    }
 
 
     /**
@@ -295,7 +355,7 @@ public class EditActivity extends BaseActivity<EditContract.EditActivityPresente
         mPresenter.updateTemplate( new CallBack() {
             @Override
             public void onSucceed() {
-                LogUtils.d(TAG," updateTemplate db onSucceed");
+                LogUtils.d(TAG," updateTemplate db onResult");
 //                hideLoading();
                 finish();
             }

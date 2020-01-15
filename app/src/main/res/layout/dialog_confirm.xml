@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="275dp"
+        android:layout_height="165dp"
+        android:background="@drawable/shape_hide_image_photo"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_tilte_papa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送模板到广告机"
+            android:layout_marginTop="18dp"
+            android:layout_centerHorizontal="true"
+            android:textColor="#D13A29"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerHorizontal="true"
+            android:background="#D13A29"/>
+
+        <TextView
+            android:id="@+id/tv_prompt"
+            android:layout_width="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/color_33"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"
+            android:text="确定要发送本模板数据，到广告机 ?" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="114dp"
+            android:layout_height="50dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#E6E6E6"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/bt_allow_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="No"
+                    android:textColor="@color/color_33"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/bt_allow_determine"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="Yes"
+                    android:textSize="14sp"
+                    android:textColor="@color/color_33" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

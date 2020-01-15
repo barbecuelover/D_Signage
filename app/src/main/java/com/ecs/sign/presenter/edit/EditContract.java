@@ -4,6 +4,7 @@ import com.ecs.sign.base.BaseView;
 import com.ecs.sign.base.common.CallBack;
 import com.ecs.sign.base.presenter.AbstractBasePresenter;
 import com.ecs.sign.model.room.info.TemplateInfo;
+import com.ecs.sign.socket.transport.SocketFileClientCallBack;
 import com.ecs.sign.view.edit.bean.Widget;
 import com.ecs.sign.view.edit.fragment.CanvasFragment;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -58,6 +59,8 @@ public interface EditContract {
         void resetStatus();
 
         void changeCurrentWidgetAttr(int attrID);
+
+        void transferTemplate(String ip, TemplateInfo templateInfo, SocketFileClientCallBack clientCallBack);
 
     }
 }
